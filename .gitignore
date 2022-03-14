@@ -1,0 +1,19 @@
+.DS_Store
+.~lock*
+*.swp
+*.gfs
+
+# Gradle
+.gradle/
+gradle.properties
+/build/
+
+# local HALE archive/folder
+HALE-*/
+HALE-*.zip
+HALE-*.tar.gz
+workspace/
+hale/
+
+# Generated schema
+/*.hsd.json

@@ -1,0 +1,57 @@
+buildscript {
+  repositories {
+    maven {
+      url 'https://artifactory.wetransform.to/artifactory/libs-snapshot-local'
+    }
+  }
+  dependencies {
+    classpath 'to.wetransform.hale:gradle-hale-plugin:1.2.0-SNAPSHOT'
+  }
+}
+
+apply plugin: 'to.wetransform.hale'
+
+repositories {
+  // mavenLocal() // for testing
+}
+
+hale {
+  cliVersion = '4.0.0'
+}
+
+afterEvaluate {
+  if (!project.hasProperty('haleCliExecutable')) {
+    // add schemabuilder reader as dependency
+    dependencies {
+      hale "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.schemabuilder:${hale.cliVersion}"
+    }
+  }
+}
+
+configurations.all {
+  resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+}
+
+task("buildSchema", type: hale.cli()) {
+  args << 'schema'
+  args << 'rewrite'
+
+  args << '--source'
+  args << file('sourceSchema.groovy').absolutePath
+
+  args << '--target'
+  args << file('source.hsd.json')
+  args << '--target-writer'
+  args << 'eu.esdihumboldt.hale.common.schema.persist.hsd.json.write'
+
+  logToConsole = true
+
+  description "Builds the source schema file from the schema builder definition."
+  group 'Schema'
+}
+
+defaultTasks 'buildSchema'
+
+wrapper {
+  gradleVersion = '6.9.2' // Note: Version 7 is not compatible with hale plugin
+}
