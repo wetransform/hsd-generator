@@ -32,25 +32,37 @@ configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
 }
 
-task("buildSchema", type: hale.cli()) {
-  args << 'schema'
-  args << 'rewrite'
-
-  args << '--source'
-  args << file('sourceSchema.groovy').absolutePath
-
-  args << '--target'
-  args << file('source.hsd.json')
-  args << '--target-writer'
-  args << 'eu.esdihumboldt.hale.common.schema.persist.hsd.json.write'
-
-  logToConsole = true
-
-  description "Builds the source schema file from the schema builder definition."
+def allTask = task('buildSchemas') {
   group 'Schema'
+  description "Build all schemas"
 }
 
-defaultTasks 'buildSchema'
+def schemasDir = file('schemas')
+schemasDir.eachDir { dir ->
+  def name = dir.name
+
+  def buildTask = task("buildSchema-$name", type: hale.cli()) {
+    args << 'schema'
+    args << 'rewrite'
+
+    args << '--source'
+    args << new File(dir, 'schema.groovy').absolutePath
+
+    args << '--target'
+    args << new File(dir, 'schema.hsd.json')
+    args << '--target-writer'
+    args << 'eu.esdihumboldt.hale.common.schema.persist.hsd.json.write'
+
+    logToConsole = true
+
+    description "Builds the $name schema file from the schema builder definition."
+    group 'Schema'
+  }
+
+  allTask.dependsOn(buildTask)
+}
+
+defaultTasks 'buildSchemas'
 
 wrapper {
   gradleVersion = '6.9.2' // Note: Version 7 is not compatible with hale plugin

@@ -16,4 +16,4 @@ workspace/
 hale/
 
 # Generated schema
-/*.hsd.json
+/schemas/*/schema.hsd.json
