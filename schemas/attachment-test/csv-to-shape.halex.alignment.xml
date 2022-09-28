@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<alignment xmlns="http://www.esdi-humboldt.eu/hale/alignment">
+    <cell relation="eu.esdihumboldt.hale.align.retype" id="C0dac81b8-3141-418b-9c0f-a4a0e66afd60" priority="normal">
+        <source>
+            <class>
+                <type name="Example" ns="http://www.esdi-humboldt.eu/hale/test"/>
+            </class>
+        </source>
+        <target>
+            <class>
+                <type name="Example" ns="http://www.esdi-humboldt.eu/hale/test"/>
+            </class>
+        </target>
+        <parameter value="false" name="ignoreNamespaces"/>
+        <parameter value="true" name="structuralRename"/>
+    </cell>
+    <cell relation="eu.esdihumboldt.cst.functions.geometric.ordinates_to_point" id="Cdb013027-8d75-4888-ac57-3caef9a71267" priority="normal">
+        <source name="x">
+            <property>
+                <type name="Example" ns="http://www.esdi-humboldt.eu/hale/test"/>
+                <child name="lat" ns="http://www.esdi-humboldt.eu/hale/test"/>
+            </property>
+        </source>
+        <source name="y">
+            <property>
+                <type name="Example" ns="http://www.esdi-humboldt.eu/hale/test"/>
+                <child name="lon" ns="http://www.esdi-humboldt.eu/hale/test"/>
+            </property>
+        </source>
+        <target>
+            <property>
+                <type name="Example" ns="http://www.esdi-humboldt.eu/hale/test"/>
+                <child name="geom" ns="http://www.esdi-humboldt.eu/hale/test"/>
+            </property>
+        </target>
+        <parameter value="EPSG:4326" name="referenceSystem"/>
+    </cell>
+</alignment>

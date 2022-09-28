@@ -1,0 +1,9 @@
+name,lat,lon,attachment,type
+Berlin,52.5170365,13.3888599,attachment:Berlin.png,Prefix file
+Darmstadt,49.872775,8.651177,attachment-https://upload.wikimedia.org/wikipedia/commons/2/28/Wappen_Darmstadt.svg,Prefix URL
+München,48.1371079,11.5753822,Muenchen.tif,Relative
+Hamburg,53.550341,10.000654,Hamburg bei Nacht.jpeg,Relative with spaces
+Köln,50.938361,6.959974,Kölle_heiß.txt,Relative with special characters
+Zürich,47.3744489,8.5410422,images/zuerich.bmp,Relative with folder
+Bensheim,49.6810158,8.6227577,./files/bensheim-story.docx,Relative with leading dot
+Weilheim an der Teck,48.6173986,9.5381895,Weilheim a.d.Teck,Not an attachment
