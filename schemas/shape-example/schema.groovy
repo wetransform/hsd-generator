@@ -65,4 +65,26 @@ schema(propertyNs) {
     // geometry name used by Shapefile schema reader
     the_geom(GeometryProperty)
   }
+
+  // type with one mandatory property becoming a non-mandatory property
+  PotentiallyNamelessCity(namespace: typeNs) {
+    name(String, cardinality: 0..1)
+
+    // individual ordinates
+    lat(Double, cardinality: 0..1)
+    lon(Double, cardinality: 0..1)
+
+    // geometry name used by Shapefile schema reader
+    the_geom(GeometryProperty)
+  }
+
+  // type with one mandatory property less
+  NamelessCity(namespace: typeNs) {
+    // individual ordinates
+    lat(Double, cardinality: 0..1)
+    lon(Double, cardinality: 0..1)
+
+    // geometry name used by Shapefile schema reader
+    the_geom(GeometryProperty)
+  }
 }
