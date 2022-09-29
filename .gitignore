@@ -17,3 +17,7 @@ hale/
 
 # Generated schema
 /schemas/*/schema.hsd.json
+
+# Generated instances
+/schemas/*/instances.*
+!/schemas/*/instances.groovy

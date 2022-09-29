@@ -16,7 +16,7 @@ repositories {
 }
 
 hale {
-  cliVersion = '4.0.0'
+  cliVersion = '4.2.0-SNAPSHOT'
 }
 
 afterEvaluate {
@@ -24,9 +24,28 @@ afterEvaluate {
     // add schemabuilder reader as dependency
     dependencies {
       hale "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.schemabuilder:${hale.cliVersion}"
+      hale "eu.esdihumboldt.hale:eu.esdihumboldt.hale.io.instancebuilder:${hale.cliVersion}"
     }
   }
 }
+
+class Format {
+  String extension
+  String providerId
+  String contentType
+}
+
+def formats = [
+  // List of supported formats
+  //
+  // Limited to formats that can write well in a generic way
+  Shapefile: new Format(extension: 'shp', providerId: 'eu.esdihumboldt.hale.io.shp.instance.writer'),
+  CSV: new Format(extension: 'csv', providerId: 'eu.esdihumboldt.hale.io.csv.writer.instance'),
+  GeoJson: new Format(extension: 'geo.json', providerId: 'eu.esdihumboldt.hale.io.geojson.writer'),
+  Json: new Format(extension: 'json', providerId: 'eu.esdihumboldt.hale.io.json.writer'),
+  GPKG: new Format(extension: 'gpkg', providerId: 'eu.esdihumboldt.hale.io.geopackage.instance.writer'),
+  XLSX: new Format(extension: 'xlsx', providerId: 'eu.esdihumboldt.hale.io.xls.writer.instance', contentType: 'eu.esdihumboldt.hale.io.xls.xlsx')
+]
 
 configurations.all {
   resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
@@ -60,6 +79,47 @@ schemasDir.eachDir { dir ->
   }
 
   allTask.dependsOn(buildTask)
+
+  def instanceFile = new File(dir, 'instances.groovy')
+  if (instanceFile.exists()) {
+    def genSchemaTask = task("genInstances-$name") {
+      group 'Instances'
+      description "Generate all instance files for $name schema"
+    }
+
+    formats.each { String formatId, Format formatSpec ->
+      def genTask = task("genInstances-$name-$formatId", type: hale.cli(), dependsOn: buildTask) {
+        args << 'data'
+        args << 'rewrite'
+
+        args << '--data'
+        args << instanceFile.absolutePath
+
+        args << '--schema'
+        args << new File(dir, 'schema.groovy').absolutePath
+
+        args << '--target'
+        args << new File(dir, "instances.${formatSpec.extension}")
+        args << '--target-writer'
+        args << formatSpec.providerId
+        if (formatSpec.contentType) {
+          args << '--target-setting'
+          args << "contentType=${formatSpec.contentType}"
+        }
+
+        logToConsole = true
+
+        description "Generate instances for $name schema in $formatId from the instance builder definition."
+        group 'Instances'
+      }.doFirst {
+        // delete target file first
+        // Note: only deletes the main file (but primarily needed for Geopackage at the moment)
+        new File(dir, "instances.${formatSpec.extension}").delete()
+      }
+
+      genSchemaTask.dependsOn(genTask)
+    }
+  }
 }
 
 defaultTasks 'buildSchemas'
