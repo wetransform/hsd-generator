@@ -77,6 +77,7 @@ schemasDir.eachDir { dir ->
     description "Builds the $name schema file from the schema builder definition."
     group 'Schema'
   }
+  buildTask.outputs.upToDateWhen { false } // XXX work-around for current Gradle plugin no longer always running the task; see also https://stackoverflow.com/a/18410574/982265
 
   allTask.dependsOn(buildTask)
 
@@ -117,6 +118,8 @@ schemasDir.eachDir { dir ->
         new File(dir, "instances.${formatSpec.extension}").delete()
       }
 
+      genTask.outputs.upToDateWhen { false }
+
       genSchemaTask.dependsOn(genTask)
     }
   }
@@ -125,5 +128,5 @@ schemasDir.eachDir { dir ->
 defaultTasks 'buildSchemas'
 
 wrapper {
-  gradleVersion = '6.9.2' // Note: Version 7 is not compatible with hale plugin
+  gradleVersion = '6.9.2'
 }
